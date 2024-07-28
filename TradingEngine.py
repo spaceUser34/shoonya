@@ -15,7 +15,15 @@ class TradingEngine:
     def StartEngine(self):
         if self._shoonyaFinvasia.isConnected():
             self._shoonyaFinvasia.RequestToBroker()
+            self.TakeNewEntry()
         else:
             print('Requesting Failed...')
 
         self._shoonyaFinvasia.CloseAPI()
+
+    def TakeNewEntry(self):
+        try:
+            print('Taking New Entry...')
+            self._shoonyaFinvasia.TransmitOrderToBrokerOMS()
+        except Exception as e:
+            print('Error in Trasmitting the New Order: ', e)

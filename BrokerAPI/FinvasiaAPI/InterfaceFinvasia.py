@@ -38,9 +38,9 @@ class InterfaceFinvasia:
         previous_date = datetime.datetime.today() - datetime.timedelta(days=2)
         uxEntryTime = int(previous_date.timestamp())
 
-        ohlc = self._shoonyaAPI.get_time_price_series(
-            exchange='NSE', token='26000', starttime=str(uxEntryTime), endtime=None)
-        print(ohlc)
+        # ohlc = self._shoonyaAPI.get_time_price_series(
+        #     exchange='NSE', token='26000', starttime=str(uxEntryTime), endtime=None)
+        # print(ohlc)
 
     def CloseAPI(self):
         try:
@@ -53,3 +53,13 @@ class InterfaceFinvasia:
 
         except Exception as e:
             print('logout failed with error', e)
+
+    def TransmitOrderToBrokerOMS(self):
+        try:
+            print('sending Trades...')
+            ord_msg = self._shoonyaAPI.place_order(
+                'B', 'C', 'NSE', 'TATACOMM-EQ', '1000', '0', 'MKT')
+
+            print('Order :', ord_msg)
+        except Exception as e:
+            print('Error in placing order: ', e)
