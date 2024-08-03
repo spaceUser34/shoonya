@@ -20,7 +20,11 @@ class InterfaceFinvasia:
             api_secret=CredentialsToFinvasia.APIKEY,
             imei=CredentialsToFinvasia.IMEI,
         )
-        print("Login Panel: ", ret['stat'])
+
+        if ret == None:
+            print('Login Failed...')
+            return
+
         if ret['stat'] == 'Ok':
             self._isConnected = True
             print('Successfuly Connected')
@@ -54,12 +58,27 @@ class InterfaceFinvasia:
         except Exception as e:
             print('logout failed with error', e)
 
-    def TransmitOrderToBrokerOMS(self):
+    def TransmitOrderToBrokerOMS(self, buy_or_sell, product_type,
+                                 exchange, tradingsymbol, quantity, discloseqty,
+                                 price_type, price, trigger_price,
+                                 retention, amo, remarks, bookloss_price, bookprofit_price, trail_price):
         try:
             print('sending Trades...')
-            ord_msg = self._shoonyaAPI.place_order(
-                'B', 'C', 'NSE', 'TATACOMM-EQ', '1000', '0', 'MKT')
+            ord_msg = self._shoonyaAPI.place_order(buy_or_sell, product_type,
+                                                   exchange, tradingsymbol, quantity, discloseqty,
+                                                   price_type, price, trigger_price,
+                                                   retention, amo, remarks, bookloss_price, bookprofit_price, trail_price)
 
-            print('Order :', ord_msg)
+            if ord_msg is None:
+                print('Order Failed')
+                return -1
+
+            if ord_msg['stat'] == 'Ok':
+                print('Order placed successfully')
+                return int(ord_msg['norenordno'])
+            else:
+                print('Order Failed')
+                return -1
+
         except Exception as e:
-            print('Error in placing order: ', e)
+            print('Error in Transmitting the order: ', e)
